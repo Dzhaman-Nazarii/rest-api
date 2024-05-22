@@ -38,25 +38,26 @@ async function addContact({name, email, phone}) {
 
 async function removeContact(contactId) {
     const data = await read();
-    const index = data.findIndex((contact) => contact.id === contactId);
-    const newContacts = {
-        ...data.slice(0, index),
-        ...data.slice(index + 1)
-    };
-    await write(newContacts);
-    return data[index];
+    const index = data.findIndex(contact => contact.id === contactId);
+    if (index === -1) {
+        return null;
+    }
+    const [removedContact] = data.splice(index, 1);
+    await write(data);
+    return removedContact;
 }
 
-async function reviseContact (contactId, contact) {
+const reviseContact = async (contactId, contact) => {
     const data = await read();
-    const index = data.findIndex((contact) => contact.id === contactId);
-    if(index === -1) {
+    const index = data.findIndex((c) => c.id === contactId);
+    if (index === -1) {
         return undefined;
     }
-    data[index] = {...contact, id: contactId };
-    await write(data);
-    return {...contact, id: contactId}
-}
+        const updatedContact = { ...data[index], ...contact, id: contactId };
+        data[index] = updatedContact;
+        await write(data);
+        return updatedContact;
+};
 
 module.exports = {
     listContacts,
