@@ -7,12 +7,12 @@ const {
     removeContact
 } = require('../services/contactsServices.js')
 
-const getAllContacts = async (req, res) => {
+const getAll = async (req, res) => {
     const result = await listContacts();
     res.status(200).json(result)
 }
 
-const getOneContact = async (req, res) => {
+const getById = async (req, res) => {
     const {id} = req.params;
     const result = await getContactById(id);
     if (result) {
@@ -20,7 +20,7 @@ const getOneContact = async (req, res) => {
     }   return res.status(404).json({"message": "Not found"})
 };
 
-const deleteContact = async (req, res) => {
+const remove = async (req, res) => {
     const {id} = req.params;
     const result = await removeContact(id)
     if (result) {
@@ -28,7 +28,7 @@ const deleteContact = async (req, res) => {
     }   return res.status(404).json({"message": "Not found"})
 };
 
-const createContact = async (req, res) => {
+const create = async (req, res) => {
     const {error, value} = createContactSchema.validate(req.body);
     if(error){
         res.status(400).json({"message": error.message})
@@ -36,7 +36,7 @@ const createContact = async (req, res) => {
         res.status(201).json(result);
 };
 
-const updateContact = async (req, res) => {
+const update = async (req, res) => {
     const { error, value } = updateContactSchema.validate(req.body);
     const contactId = req.params.id;
 
@@ -55,9 +55,9 @@ const updateContact = async (req, res) => {
 };
 
 module.exports = {
-    getAllContacts,
-    getOneContact,
-    deleteContact,
-    createContact,
-    updateContact
+    getAll,
+    getById,
+    remove,
+    create,
+    update
 }
