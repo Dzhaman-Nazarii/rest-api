@@ -1,6 +1,5 @@
 {
   "name": "rest-api",
-  "type": "module",
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js"
