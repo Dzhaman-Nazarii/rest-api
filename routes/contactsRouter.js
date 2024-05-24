@@ -5,6 +5,7 @@ const {
   remove,
   create,
   update,
+  updateStatusContact
 } = require('../controllers/contactsControllers.js')
 
 const jsonParser = express.json();
@@ -21,5 +22,6 @@ contactsRouter.post("/", jsonParser, create);
 
 contactsRouter.put("/:id", jsonParser, update);
 
+contactsRouter.patch("/:id/favorite", jsonParser, updateStatusContact);
 
 module.exports = contactsRouter;
