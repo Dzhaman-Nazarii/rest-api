@@ -7,9 +7,15 @@ const {
     removeContact
 } = require('../services/contactsServices.js')
 
-const getAll = async (req, res) => {
-    const result = await listContacts();
-    res.status(200).json(result)
+const contactModel = require('../models/contacts.js');
+
+const getAll = async (req, res, next) => {
+    try {
+        const docs = await contactModel.find().exec();
+        res.send(docs);
+    } catch(error){
+        next(error)
+    }
 }
 
 const getById = async (req, res) => {
@@ -28,12 +34,20 @@ const remove = async (req, res) => {
     }   return res.status(404).json({"message": "Not found"})
 };
 
-const create = async (req, res) => {
-    const {error, value} = createContactSchema.validate(req.body);
-    if(error){
-        res.status(400).json({"message": error.message})
-    }   const result = await addContact (value);
-        res.status(201).json(result);
+const create = async(req, res, next) => {
+    const {name, email, phone, favorite} = req.body;
+    const contact = {
+        name,
+        email,
+        phone,
+        favorite
+    }
+    try{
+        const doc = await contactModel.create(contact);
+        res.status(201).send(doc);
+    } catch(error){
+        next(error)
+    }
 };
 
 const update = async (req, res) => {
