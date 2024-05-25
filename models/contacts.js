@@ -14,7 +14,7 @@ const contactSchema = new mongoose.Schema({
     favorite: {
       type: Boolean,
       default: false,
-    },
+    }
   },{
     versionKey: false,
     timestamps: true
