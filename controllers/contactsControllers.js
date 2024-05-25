@@ -1,5 +1,3 @@
-const { createContactSchema, updateContactSchema, updateFavoriteSchema } = require('../schemas/contactsSchemas.js');
-
 const contactModel = require('../models/contacts.js');
 
 const getAll = async (req, res, next) => {
