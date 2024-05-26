@@ -34,16 +34,25 @@ const login = async (req, res, next) => {
     }
     const token = jwt.sign(
       {
-        id: user._id,
-        name: user.name,
+        id: user._id
       },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
+    await UserModel.findByIdAndUpdate(user._id, {token}).exec()
     res.send({ token });
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { register, login };
+const logout = async (req, res, next) => {
+  try{
+    await UserModel.findByIdAndUpdate(req.user.id, {token: null}).exec();
+    res.status(204).end();
+  } catch(error) {
+    next(error)
+  }
+}
+
+module.exports = { register, login, logout };

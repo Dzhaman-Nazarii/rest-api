@@ -14,6 +14,10 @@ const contactSchema = new mongoose.Schema({
     favorite: {
       type: Boolean,
       default: false,
+    },
+    owner: {
+      type: mongoose.Schema.ObjectId,
+      required: true
     }
   },{
     versionKey: false,

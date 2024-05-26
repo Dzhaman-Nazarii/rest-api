@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 
+const auth = require('./middleware/auth.js')
+
 const contactsRouter = require("./routes/contactsRouter.js");
 const usersRouter = require("./routes/usersRouter.js");
 
@@ -10,7 +12,7 @@ const app = express();
 app.use(morgan("tiny"));
 app.use(cors());
 
-app.use("/api/contacts", contactsRouter);
+app.use("/api/contacts", auth, contactsRouter);
 app.use("/api/users", usersRouter);
 
 app.use((_, res) => {
