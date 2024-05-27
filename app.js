@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const path = require('node:path');
 
 const auth = require('./middleware/auth.js')
 
@@ -14,6 +15,7 @@ app.use(cors());
 
 app.use("/api/contacts", auth, contactsRouter);
 app.use("/api/users", usersRouter);
+app.use("/avatars", express.static(path.join(__dirname, "public")))
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });

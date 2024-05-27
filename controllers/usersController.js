@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const fs = require('node:fs/promises');
+const path = require('node:path');
 const UserModel = require("../models/users");
 
 const register = async (req, res, next) => {
@@ -39,7 +41,7 @@ const login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-    await UserModel.findByIdAndUpdate(user._id, {token}).exec()
+    await UserModel.findByIdAndUpdate(user._id, {token}).exec();
     res.send({ token });
   } catch (error) {
     next(error);
@@ -51,8 +53,21 @@ const logout = async (req, res, next) => {
     await UserModel.findByIdAndUpdate(req.user.id, {token: null}).exec();
     res.status(204).end();
   } catch(error) {
+    next(error);
+  }
+}
+
+const uploadAvatar = async(req, res, next) => {
+  try{
+    await fs.rename(req.file.path, path.join(__dirname, "..", "public", req.file.filename));
+    const doc = await UserModel.findByIdAndUpdate(req.user.id, {avatarURL: req.file.filename}, {new: true}).exec();
+    if(doc === null) {
+      return res.status(404).send({message: "User not found"});
+    }
+    res.send(doc);
+  } catch(error){
     next(error)
   }
 }
 
-module.exports = { register, login, logout };
+module.exports = { register, login, logout, uploadAvatar };

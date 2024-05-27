@@ -1,6 +1,7 @@
 const express = require('express');
-const {register, login, logout} = require('../controllers/usersController');
-const auth = require('../middleware/auth')
+const upload = require('../middleware/upload');
+const {register, login, logout, uploadAvatar} = require('../controllers/usersController');
+const auth = require('../middleware/auth');
 
 const usersRouter = express.Router();
 
@@ -9,5 +10,6 @@ const jsonParser = express.json();
 usersRouter.post('/register', jsonParser, register);
 usersRouter.post('/login', jsonParser, login);
 usersRouter.post('/logout', auth, logout);
+usersRouter.patch('/avatars', auth, upload.single('avatar'), uploadAvatar);
 
 module.exports = usersRouter;
