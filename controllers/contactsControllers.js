@@ -2,7 +2,7 @@ const contactModel = require('../models/contacts.js');
 
 const getAll = async (req, res, next) => {
     try {
-        const docs = await contactModel.find().exec();
+        const docs = await contactModel.find({owner: req.user.id}).exec();
         res.send(docs);
     } catch(error){
         next(error)
@@ -14,7 +14,10 @@ const getById = async (req, res,next) => {
     try{
         const doc = await contactModel.findById(id).exec();
         if(doc === null) {
-            res.status(404).send({message: "Not found"})
+            return res.status(404).send({message: "Contact not found"})
+        }
+        if(doc.owner.toString() !== req.user.id){
+            return res.status(404).send({message: "Contact not found"})
         }
         res.send(doc);
     } catch(error){
@@ -26,6 +29,9 @@ const remove = async (req, res, next) => {
     const {id} = req.params;
     try{
         const doc = await contactModel.findOneAndDelete(id).exec();
+        if(doc.owner.toString() !== req.user.id) {
+            return res.status(404).send({message: "Contact not found"})
+        }
         res.status(204).end();
     } catch(error){
         next(error)
@@ -38,7 +44,8 @@ const create = async(req, res, next) => {
         name,
         email,
         phone,
-        favorite
+        favorite,
+        owner: req.user.id
     }
     try{
         const doc = await contactModel.create(contact);
@@ -61,7 +68,10 @@ const update = async (req, res, next) => {
 
     try{
         const doc = await contactModel.findByIdAndUpdate(id, contact, {new: true}).exec();
-        if(!doc){
+        if(doc.owner.toString() !== req.user.id) {
+            return res.status(404).send({message: "Contact not found"})
+        }
+        else if(!doc){
             res.send({message: "missing fields"})
         }
         else if(doc === null) {
@@ -82,7 +92,10 @@ const updateStatusContact = async (req,res,next) =>  {
             { favorite },
             { new: true }
         );
-        if (!doc) {
+        if(doc.owner.toString() !== req.user.id) {
+            return res.status(404).send({message: "Contact not found"})
+        }
+        else if (!doc) {
             return res.status(404).json({ message: 'Contact not found' });
         }
 
