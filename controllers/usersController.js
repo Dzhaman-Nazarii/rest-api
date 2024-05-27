@@ -39,7 +39,7 @@ const login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-    await UserModel.findByIdAndUpdate(user._id, {token}).exec()
+    await UserModel.findByIdAndUpdate(user._id, {token}).exec();
     res.send({ token });
   } catch (error) {
     next(error);
@@ -51,8 +51,12 @@ const logout = async (req, res, next) => {
     await UserModel.findByIdAndUpdate(req.user.id, {token: null}).exec();
     res.status(204).end();
   } catch(error) {
-    next(error)
+    next(error);
   }
 }
 
-module.exports = { register, login, logout };
+const uploadAvatar = async(req, res, next) => {
+  res.send('Upload avatar');
+}
+
+module.exports = { register, login, logout, uploadAvatar };
