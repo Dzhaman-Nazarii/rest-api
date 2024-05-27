@@ -1,6 +1,9 @@
 tmp/*
 !tmp/.gitkeep
 
+public/*
+!public/.gitkeep
+
 # Logs
 logs
 *.log
